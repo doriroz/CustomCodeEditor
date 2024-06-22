@@ -3,11 +3,17 @@ import { FaPlay } from "react-icons/fa";
 import Editor from "@monaco-editor/react";
 import "../components/css/EditorComponent.css"; // Optional for styling
 import "@fortawesome/fontawesome-free/css/all.css";
+import { borderRadius, padding } from "@mui/system";
 
-const judge0SubmitUrl =
-  process.env.JUDGE0_SUMBISSION_URL || process.env.REACT_APP_RAPID_API_URL;
-const rapidApiHost = process.env.REACT_APP_RAPID_API_HOST;
-const rapidApiKey = process.env.REACT_APP_RAPID_API_KEY;
+// const judge0SubmitUrl =
+//   process.env.JUDGE0_SUMBISSION_URL || process.env.REACT_APP_RAPID_API_URL;
+// console.log(judge0SubmitUrl);
+// const rapidApiHost = process.env.REACT_APP_RAPID_API_HOST;
+// const rapidApiKey = process.env.REACT_APP_RAPID_API_KEY;
+const postJudge0SubmitUrl = `https://judge0-ce.p.rapidapi.com/submissions?fields=*`;
+const getJudge0SubmitUrl = `https://judge0-ce.p.rapidapi.com/submissions`;
+const rapidApiKey = "9b72fdbcabmshb5a0737e8498c36p1118b3jsnf3dd44b1491e";
+const rapidApiHost = "judge0-ce.p.rapidapi.com";
 
 const LANGUAGE_ID_FOR_JAVASCRIPT = 63;
 const LANGUAGE_ID_FOR_PYTHON3 = 71;
@@ -45,7 +51,35 @@ function EditorComponent() {
     LANGUAGE_NAME: "",
     DEFAULT_LANGUAGE: "",
   });
+  // ===============================================
+  const [user, setUser] = useState();
 
+  useEffect(() => {
+    const getCurrentUser = () => {
+      fetch("http://localhost:5000/auth/login/success", {
+        method: "GET",
+        // mode: "no-cors",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": false,
+        },
+      })
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          throw new Error("failed to get response");
+        })
+        .then((resObject) => {
+          console.log(resObject);
+          setUser(resObject);
+        })
+        .catch((error) => console.log(error));
+    };
+
+    getCurrentUser();
+  }, []);
+  // ==========================================
   useEffect(() => {
     const selectedLanguage =
       currentLanguage === LANGUAGES[0].DEFAULT_LANGUAGE
@@ -74,11 +108,11 @@ function EditorComponent() {
   // Function to handle code submission
   async function submitCode() {
     const codeToSubmit = editorRef.current.getValue();
-
     console.log(" Code to submit ", codeToSubmit);
 
     try {
-      const response = await fetch(judge0SubmitUrl, {
+      const response = await fetch(postJudge0SubmitUrl, {
+        // await fetch(judge0SubmitUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +138,7 @@ function EditorComponent() {
       console.log(`Submission created successfully. ID: ${submissionId}`);
 
       setTimeout(() => {
-        fetch(`${judge0SubmitUrl}/${submissionId}`, {
+        fetch(`${getJudge0SubmitUrl}/${submissionId}?fields=*`, {
           method: "GET",
           headers: {
             "X-RapidAPI-Key": rapidApiKey,
@@ -141,6 +175,21 @@ function EditorComponent() {
     errElement.style.display = "none";
   }
 
+  async function logout() {
+    try {
+      const response = await fetch("http://localhost:5000/auth/logout");
+
+      if (response.ok) {
+        console.log("success logout");
+        window.location.href = "http://localhost:3000/";
+      } else {
+        console.log(response.status);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
   return (
     <div style={styles.container}>
       {/* className="editor-container"  */}
@@ -156,7 +205,7 @@ function EditorComponent() {
 
       {/* error-message */}
       {/* Language toggle button (top right corner) */}
-      <div style={{ backgroundColor: "#b7b8a9" }}>
+      <div style={styles.navbar}>
         {/* Current Language Logo */}
         <div style={styles.flexStart}>
           {currentLanguage === LANGUAGES[0].DEFAULT_LANGUAGE ? (
@@ -168,6 +217,28 @@ function EditorComponent() {
           <div style={{ fontWeight: "bold" }}>
             {languageDetails.LANGUAGE_NAME}
           </div>
+        </div>
+        <div style={{ display: "flex" }}>
+          <img
+            style={{
+              width: "2.5rem",
+              height: "2.5rem",
+              borderRadius: "50px",
+              marginTop: "1rem",
+            }}
+            src={user?.user?.photos[0].value}
+          />
+          <p
+            style={{
+              margin: "1.5rem",
+              fontSize: "1.2rem",
+            }}
+          >
+            {user?.user?.username}
+          </p>
+          <button style={styles.logout} onClick={logout}>
+            LogOut
+          </button>
         </div>
       </div>
       <div className="layout">
@@ -205,7 +276,7 @@ function EditorComponent() {
 
       <div
         style={{
-          backgroundColor: "#eceddd",
+          backgroundColor: "#d7f7e8",
           height: "22.3vh",
         }}
       >
@@ -223,6 +294,11 @@ const styles = {
   // container: {
   //   textAlign: 'center',
   // },
+  navbar: {
+    backgroundColor: "#afcfde",
+    display: "flex",
+    justifyContent: "space-between",
+  },
   flexStart: {
     display: "flex",
     justifyContent: "flex-start",
@@ -278,6 +354,15 @@ const styles = {
     fontSize: "20px",
     marginRight: "1rem",
     cursor: "pointer",
+  },
+  logout: {
+    border: "none",
+    borderRadius: "50px",
+    margin: "1rem",
+    padding: "0 1rem",
+    height: "2.5rem",
+    color: "white",
+    backgroundColor: "#4a1ff2",
   },
 };
 

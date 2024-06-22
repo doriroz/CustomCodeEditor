@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LandingPage from './pages/LandingPage';
-import EditorComponent from './pages/EditorComponent';
-import './components/css/App.css'
-import { ThemeProvider } from '@mui/material';
-import theme from './theme';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import EditorComponent from "./pages/EditorComponent";
+import "./components/css/App.css";
+import { ThemeProvider } from "@mui/material";
+import theme from "./theme";
 
 function App() {
   return (
@@ -18,4 +18,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
