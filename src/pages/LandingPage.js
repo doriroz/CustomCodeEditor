@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Stars from "../components/js/Stars";
-// Client ID : Ov23liK7UdhCRnN0yJDt
 
 function LandingPage() {
   const loginHandler = () => {
@@ -26,12 +25,21 @@ const styles = {
   container: {
     textAlign: "center",
     marginTop: "100px",
+    textAlign: "center",
+    marginTop: "100px",
   },
   heading: {
     fontSize: "4em",
     color: "#333",
+    fontSize: "4em",
+    color: "#333",
   },
   link: {
+    display: "block",
+    marginTop: "20px",
+    textDecoration: "none",
+    color: "#007bff",
+    fontSize: "1.2em",
     display: "block",
     marginTop: "20px",
     textDecoration: "none",
