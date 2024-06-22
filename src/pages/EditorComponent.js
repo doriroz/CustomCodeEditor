@@ -32,7 +32,7 @@ const LANGUAGES = [
   {
     ID: LANGUAGE_ID_FOR_CPP,
     NAME: "C++",
-    DEFAULT_LANGUAGE: "C++(Clang 7.0.1)"
+    DEFAULT_LANGUAGE: "C++(Clang 7.0.1)",
   },
 ];
 
@@ -88,7 +88,9 @@ function EditorComponent() {
     const selectedLanguage =
       currentLanguage === LANGUAGES[0].DEFAULT_LANGUAGE
         ? LANGUAGES[0]
-        : currentLanguage === LANGUAGES[1].DEFAULT_LANGUAGE ? LANGUAGES[1] : LANGUAGES[2];
+        : currentLanguage === LANGUAGES[1].DEFAULT_LANGUAGE
+        ? LANGUAGES[1]
+        : LANGUAGES[2];
 
     setLanguageDetails({
       LANGUAGE_ID: selectedLanguage.ID,
@@ -152,7 +154,7 @@ function EditorComponent() {
         })
           .then((response) => response.json())
           .then((data) => {
-            if(!data.stdout) {
+            if (!data.stdout) {
               enqueueSnackbar("Please check the code", { variant: "error" });
               setOutput(data.message);
               return;
