@@ -4,37 +4,12 @@ import Editor from "@monaco-editor/react";
 import "../components/css/EditorComponent.css"; // Optional for styling
 import "@fortawesome/fontawesome-free/css/all.css";
 import { borderRadius, padding } from "@mui/system";
-
-// const judge0SubmitUrl =
-//   process.env.JUDGE0_SUMBISSION_URL || process.env.REACT_APP_RAPID_API_URL;
-// console.log(judge0SubmitUrl);
-// const rapidApiHost = process.env.REACT_APP_RAPID_API_HOST;
-// const rapidApiKey = process.env.REACT_APP_RAPID_API_KEY;
-const postJudge0SubmitUrl = `https://judge0-ce.p.rapidapi.com/submissions?fields=*`;
-const getJudge0SubmitUrl = `https://judge0-ce.p.rapidapi.com/submissions`;
-const rapidApiKey = "9b72fdbcabmshb5a0737e8498c36p1118b3jsnf3dd44b1491e";
-const rapidApiHost = "judge0-ce.p.rapidapi.com";
-
-const LANGUAGE_ID_FOR_JAVASCRIPT = 63;
-const LANGUAGE_ID_FOR_PYTHON3 = 71;
-const LANGUAGE_ID_FOR_CPP = 76;
-const LANGUAGES = [
-  {
-    ID: LANGUAGE_ID_FOR_JAVASCRIPT,
-    NAME: "Javascript",
-    DEFAULT_LANGUAGE: "javascript",
-  },
-  {
-    ID: LANGUAGE_ID_FOR_PYTHON3,
-    NAME: "Python3",
-    DEFAULT_LANGUAGE: "python",
-  },
-  {
-    ID: LANGUAGE_ID_FOR_CPP,
-    NAME: "C++",
-    DEFAULT_LANGUAGE: "C++(Clang 7.0.1)",
-  },
-];
+import {
+  LANGUAGES,
+  judge0SubmitUrl,
+  rapidApiHost,
+  rapidApiKey,
+} from "../constants/constants";
 
 // need to incorporate toggle
 // const LANGUAGE = LANGUAGES[0];
@@ -117,7 +92,7 @@ function EditorComponent() {
     console.log(" Code to submit ", codeToSubmit);
 
     try {
-      const response = await fetch(postJudge0SubmitUrl, {
+      const response = await fetch(judge0SubmitUrl, {
         // await fetch(judge0SubmitUrl, {
         method: "POST",
         headers: {
@@ -145,7 +120,7 @@ function EditorComponent() {
       const submissionId = data["token"];
 
       setTimeout(() => {
-        fetch(`${getJudge0SubmitUrl}/${submissionId}?fields=*`, {
+        fetch(`${judge0SubmitUrl}/${submissionId}`, {
           method: "GET",
           headers: {
             "X-RapidAPI-Key": rapidApiKey,
